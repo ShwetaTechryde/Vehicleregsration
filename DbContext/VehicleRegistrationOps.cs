@@ -33,10 +33,25 @@ namespace Vehicleregsration.DbContext
         {
             return _context.Vehichledata.Find(id);
         }
-        public void UpdateProduct(Models.Vehichledatum vehichledatum)
+        public void UpdateProduct(Vehichledatum vehichledatum)
         {
-            _context.Vehichledata.Update(vehichledatum);
-            _context.SaveChanges();
+            var existingVehichle = _context.Vehichledata.FirstOrDefault(v => v.VehId == vehichledatum.VehId);
+
+            if (existingVehichle != null)
+            {
+                // Update the properties of the existing record with new values
+                existingVehichle.VehSerialno = vehichledatum.VehSerialno;
+                existingVehichle.VehName = vehichledatum.VehName;
+                existingVehichle.VehPrice = vehichledatum.VehPrice;
+                // Repeat for all relevant properties
+
+                // Save changes to the database
+                _context.SaveChanges();
+            }
+            else
+            {
+                throw new KeyNotFoundException($"Vehicle with ID {vehichledatum.VehId} not found.");
+            }
         }
     }
 }
